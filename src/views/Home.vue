@@ -70,13 +70,18 @@
 									}}</a>
 									<small class="text-black-50">{{
 										post.createdAt
+											| moment('YYYY/M/DD HH:ss')
 									}}</small>
 								</div>
 							</div>
 						</div>
 						<div class="card-body">
 							<p v-html="post.content" class="mb-3"></p>
-							<img :src="post.user.photo" class="w-100 mb-3" />
+							<img
+								:src="post.image"
+								class="w-100 mb-3 content-image"
+                v-if="post.image"
+							/>
 						</div>
 					</div>
 				</template>
@@ -88,6 +93,14 @@
 				<SidebarSm></SidebarSm>
 			</div>
 		</div>
+    <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+    Hello, world! This is a toast message.
+   </div>
+    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
+</div>
 		<loading :active.sync="isLoading"></loading>
 	</div>
 </template>
@@ -139,53 +152,8 @@ export default {
 			} catch (error) {
 				alert(error);
 			}
-		},
-		addPost() {
-			this.posts = [
-				{
-					id: 1,
-					headshot: 'user-head.png',
-					name: '邊緣小杰',
-					date: '2022/1/10 12:00',
-					content:
-						'外面看起來就超冷....<br>我決定回被窩繼續睡....>.<',
-					picture: 'post-picture.png',
-					thumbs_up: 12,
-					messages: [
-						{
-							id: 111,
-							headshot: 'user-head.png',
-							name: '希琳',
-							date: '2022/1/11 10:00',
-							content: '真的～我已經準備冬眠了'
-						},
-						{
-							id: 222,
-							headshot: 'user-head.png',
-							name: '波吉',
-							date: '2022/1/11 10:00',
-							content: '會嗎？我沒穿衣服都不覺得冷'
-						}
-					]
-				},
-				{
-					id: 2,
-					headshot: 'user-head.png',
-					name: '米卡莎',
-					date: '2022/1/10 12:00',
-					content: '搶到想要的 NFT 啦！ya~~',
-					picture: 'post-picture-2.png',
-					thumbs_up: 0,
-					messages: []
-				}
-			];
-		},
-		onSearch() {
-			this.getPosts();
-		},
-		getPictureUrl(path) {
-			return require(`@/assets/img/${path}`);
 		}
+
 	}
 };
 </script>
@@ -218,6 +186,10 @@ export default {
 			height: 50px;
 			background-color: #e2edfa;
 		}
+	}
+	.content-image {
+		border: 2px #000 solid;
+		border-radius: 10px;
 	}
 	.message-card {
 		background-color: rgba($gray-300, 0.3);

@@ -13,6 +13,7 @@ window.$ = $;
 Vue.component('loading', Loading);
 
 Vue.use(VueAxios, axios);
+Vue.use(require('vue-moment'));
 axios.defaults.withCredentials = true;
 
 new Vue({
