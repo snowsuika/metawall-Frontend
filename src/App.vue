@@ -5,13 +5,13 @@
 </template>
 
 <script>
-// Import stylesheet
-import 'vue-loading-overlay/dist/vue-loading.css';
+
 export default {
 	data() {
 		return {};
 	},
-	mounted() {},
+	mounted() {
+	},
 	methods: {}
 };
 </script>

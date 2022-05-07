@@ -59,7 +59,7 @@
 					<div
 						class="rounded-card card mb-3"
 						v-for="post in posts"
-						:key="post.id"
+						:key="post._id"
 					>
 						<div class="card-header bg-transparent pt-3 border-0">
 							<div class="d-flex align-items-center">
@@ -80,7 +80,7 @@
 							<img
 								:src="post.image"
 								class="w-100 mb-3 content-image"
-                v-if="post.image"
+								v-if="post.image"
 							/>
 						</div>
 					</div>
@@ -92,16 +92,8 @@
 			<div class="d-md-none">
 				<SidebarSm></SidebarSm>
 			</div>
+			<loading :active.sync="isLoading"></loading>
 		</div>
-    <div class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
-  <div class="d-flex">
-    <div class="toast-body">
-    Hello, world! This is a toast message.
-   </div>
-    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-  </div>
-</div>
-		<loading :active.sync="isLoading"></loading>
 	</div>
 </template>
 
@@ -114,7 +106,13 @@ export default {
 	},
 	data() {
 		return {
-			isLoading: false,
+			toast: {
+				isShowToast: false,
+				isSuccess: true,
+				message: ''
+			},
+			isLoading: true,
+
 			query: {
 				sort: 'desc',
 				keyword: ''
@@ -127,33 +125,34 @@ export default {
 	},
 
 	methods: {
-		getPosts() {
+		async getPosts() {
 			try {
 				this.isLoading = true;
-				this.axios
-					.get('http://localhost:3000/posts', {
+				const resData = await this.axios.get(
+					'http://localhost:3000/posts',
+					{
 						params: {
 							keyword: this.query.keyword,
 							sort: this.query.sort
 						}
-					})
-					.then((response) => {
-						console.log(response);
-						if (
-							!response.data ||
-							response.data.status !== 'success'
-						) {
-							throw new Error('找不到資料');
-						}
-						this.posts = response.data.data;
-						this.isLoading = false;
-						console.log('response.data.data', response.data.data);
-					});
+					}
+				);
+				if (!resData.data || resData.data.status !== 'success') throw new Error('取得資料失敗');
+				this.posts = resData.data.data;
+				this.isLoading = false;
 			} catch (error) {
-				alert(error);
+				this.isLoading = false;
+				this.showNotify('error', '取得貼文失敗', error.response.data.message);
 			}
+		},
+		showNotify(type, title, text) {
+			this.$notify({
+				group: 'post',
+				type,
+				title,
+				text
+			});
 		}
-
 	}
 };
 </script>

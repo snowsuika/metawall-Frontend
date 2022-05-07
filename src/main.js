@@ -7,6 +7,7 @@ import VueAxios from 'vue-axios';
 import router from './router';
 import App from './App.vue';
 import Loading from 'vue-loading-overlay';
+import Notifications from 'vue-notification';
 
 window.jQuery = $;
 window.$ = $;
@@ -14,6 +15,7 @@ Vue.component('loading', Loading);
 
 Vue.use(VueAxios, axios);
 Vue.use(require('vue-moment'));
+Vue.use(Notifications);
 axios.defaults.withCredentials = true;
 
 new Vue({
