@@ -19,26 +19,31 @@
 								v-model="post.content"
 							></textarea>
 						</div>
+						<input
+							class="d-none"
+							ref="uploadImage"
+							type="file"
+              accept="image/png, image/jpeg"
+							@change="previewPicture()"
+						/>
 						<button
 							type="button"
 							class="btn bg-black text-white shadow-none py-1 mb-3"
+							@click.prevent="$refs.uploadImage.click()"
 						>
 							上傳圖片
 						</button>
-						<img
-							src="~@/assets/img/post-picture.png"
-							class="w-100"
-						/>
+
+						<img v-if="imageUrl" :src="imageUrl" class="border rounded border-dark w-100" />
 						<div
 							v-if="errorMessage"
 							class="text-danger text-center d-block mt-3"
 						>
 							<small
-								v-for="(item, index) in errorMessage"
-								:key="`error_${index}`"
+
 								class="d-block"
 							>
-								{{ item }}
+							{{ errorMessage }}
 							</small>
 						</div>
 						<div class="submit-btn-wrap mx-auto">
@@ -62,7 +67,7 @@
 			</div>
 		</div>
 		<loading :active.sync="isLoading"></loading>
-    <notifications position="bottom" group="post" style="bottom:40px"/>
+		<notifications position="bottom" group="post" style="bottom: 40px" />
 	</div>
 </template>
 
@@ -81,15 +86,14 @@ export default {
 				content: ''
 			},
 
-			errorMessage: [],
-			isLoading: false
+			errorMessage: '',
+			isLoading: false,
+			uploadImg: null,
+			imageUrl: ''
 		};
 	},
-	created() {
-
-	},
+	created() {},
 	methods: {
-
 		async submitPost() {
 			try {
 				this.isLoading = true;
@@ -99,15 +103,20 @@ export default {
 				);
 
 				if (!resData) throw new Error('新增貼文失敗');
-				if (resData.data.status !== 'success') throw new Error(resData.data.message);
+				if (resData.data.status !== 'success') {
+					throw new Error(resData.data.message);
+				}
 
 				this.showNotify('success', '新增成功');
 				this.isLoading = false;
 				this.$router.push('/');
 			} catch (error) {
-				console.log(error.response);
 				this.isLoading = false;
-				this.showNotify('error', '新增失敗', error.response.data.message);
+				this.showNotify(
+					'error',
+					'新增失敗',
+					error.response.data.message
+				);
 			}
 		},
 		showNotify(type, title, text) {
@@ -117,6 +126,28 @@ export default {
 				title,
 				text
 			});
+		},
+		async previewPicture() {
+			if (this.$refs.uploadImage.files.length === 0) return;
+			this.uploadImg = this.$refs.uploadImage.files[0];
+
+			// 確認檔案尺寸是否超過 1 MB
+			if ((this.uploadImg.size / 1024 / 1024) > 1) {
+				this.errorMessage = '圖片檔案過大，僅限 1mb 以下檔案';
+				return;
+			}
+
+			const getBase64Url = () => {
+				return new Promise((resolve) => {
+					const reader = new FileReader();
+					reader.readAsDataURL(this.uploadImg);
+					reader.onload = function(e) {
+						resolve(e.target.result);
+					};
+				});
+			};
+
+			this.imageUrl = await getBase64Url();
 		}
 	}
 };
@@ -131,5 +162,4 @@ export default {
 		width: 320px;
 	}
 }
-
 </style>
