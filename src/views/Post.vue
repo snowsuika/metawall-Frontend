@@ -23,7 +23,7 @@
 							class="d-none"
 							ref="uploadImage"
 							type="file"
-              accept="image/png, image/jpeg"
+							accept="image/png, image/jpeg"
 							@change="previewPicture()"
 						/>
 						<button
@@ -34,16 +34,17 @@
 							上傳圖片
 						</button>
 
-						<img v-if="imageUrl" :src="imageUrl" class="border rounded border-dark w-100" />
+						<img
+							v-if="previewUrl"
+							:src="previewUrl"
+							class="border rounded border-dark w-100"
+						/>
 						<div
 							v-if="errorMessage"
 							class="text-danger text-center d-block mt-3"
 						>
-							<small
-
-								class="d-block"
-							>
-							{{ errorMessage }}
+							<small class="d-block">
+								{{ errorMessage }}
 							</small>
 						</div>
 						<div class="submit-btn-wrap mx-auto">
@@ -66,8 +67,8 @@
 				<SidebarSm></SidebarSm>
 			</div>
 		</div>
-		<loading :active.sync="isLoading"></loading>
-		<notifications position="bottom" group="post" style="bottom: 40px" />
+		<loading :active.sync="isLoading" :is-full-page="true"></loading>
+		<notifications position="center" group="post" style="top: 40px" />
 	</div>
 </template>
 
@@ -89,7 +90,7 @@ export default {
 			errorMessage: '',
 			isLoading: false,
 			uploadImg: null,
-			imageUrl: ''
+			previewUrl: null
 		};
 	},
 	created() {},
@@ -97,6 +98,7 @@ export default {
 		async submitPost() {
 			try {
 				this.isLoading = true;
+
 				const resData = await this.axios.post(
 					'http://localhost:3000/posts',
 					this.post
@@ -130,9 +132,10 @@ export default {
 		async previewPicture() {
 			if (this.$refs.uploadImage.files.length === 0) return;
 			this.uploadImg = this.$refs.uploadImage.files[0];
+			const imageType = this.uploadImg.type;
 
 			// 確認檔案尺寸是否超過 1 MB
-			if ((this.uploadImg.size / 1024 / 1024) > 1) {
+			if (this.uploadImg.size / 1024 / 1024 > 1) {
 				this.errorMessage = '圖片檔案過大，僅限 1mb 以下檔案';
 				return;
 			}
@@ -147,7 +150,11 @@ export default {
 				});
 			};
 
-			this.imageUrl = await getBase64Url();
+			this.previewUrl = await getBase64Url();
+			this.post.image = this.previewUrl.replace(
+				`data:${imageType};base64,`,
+				''
+			);
 		}
 	}
 };

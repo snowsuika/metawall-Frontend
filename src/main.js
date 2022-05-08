@@ -8,6 +8,7 @@ import router from './router';
 import App from './App.vue';
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
+import 'vue-loading-overlay/dist/vue-loading.css';
 
 window.jQuery = $;
 window.$ = $;

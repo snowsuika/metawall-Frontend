@@ -68,10 +68,7 @@
 									<a href="#" class="fw-bold">{{
 										post.user.name
 									}}</a>
-									<small class="text-black-50">{{
-										post.createdAt
-											| moment('YYYY/M/DD HH:ss')
-									}}</small>
+									<small class="text-black-50">{{ new Date(post.createdAt) | moment('YYYY/M/DD HH:mm') }}</small>
 								</div>
 							</div>
 						</div>
@@ -93,6 +90,7 @@
 				<SidebarSm></SidebarSm>
 			</div>
 			<loading :active.sync="isLoading"></loading>
+      <notifications position="center" group="post" style="top:30px" />
 		</div>
 	</div>
 </template>
@@ -106,13 +104,7 @@ export default {
 	},
 	data() {
 		return {
-			toast: {
-				isShowToast: false,
-				isSuccess: true,
-				message: ''
-			},
 			isLoading: true,
-
 			query: {
 				sort: 'desc',
 				keyword: ''
@@ -142,7 +134,7 @@ export default {
 				this.isLoading = false;
 			} catch (error) {
 				this.isLoading = false;
-				this.showNotify('error', '取得貼文失敗', error.response.data.message);
+				this.showNotify('error', '取得貼文失敗');
 			}
 		},
 		showNotify(type, title, text) {

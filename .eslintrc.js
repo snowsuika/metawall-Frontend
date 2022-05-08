@@ -12,6 +12,8 @@ module.exports = {
 		parser: 'babel-eslint'
 	},
 	rules: {
+    "no-mixed-spaces-and-tabs": 0, // disable rule
+    "vue/no-v-model-argument": "off",
 		'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 		'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
 		indent: [ 'error', 'tab' ],
