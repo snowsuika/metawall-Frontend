@@ -17,7 +17,7 @@ Vue.component('loading', Loading);
 Vue.use(VueAxios, axios);
 Vue.use(require('vue-moment'));
 Vue.use(Notifications);
-axios.defaults.withCredentials = true;
+axios.defaults.withCredentials = false;
 
 new Vue({
 	data: {

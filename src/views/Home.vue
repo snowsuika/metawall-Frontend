@@ -68,7 +68,10 @@
 									<a href="#" class="fw-bold">{{
 										post.user.name
 									}}</a>
-									<small class="text-black-50">{{ new Date(post.createdAt) | moment('YYYY/M/DD HH:mm') }}</small>
+									<small class="text-black-50">{{
+										new Date(post.createdAt)
+											| moment('YYYY/M/DD HH:mm')
+									}}</small>
 								</div>
 							</div>
 						</div>
@@ -90,7 +93,7 @@
 				<SidebarSm></SidebarSm>
 			</div>
 			<loading :active.sync="isLoading"></loading>
-      <notifications position="center" group="post" style="top:30px" />
+			<notifications position="center" group="post" style="top: 30px" />
 		</div>
 	</div>
 </template>
@@ -121,7 +124,7 @@ export default {
 			try {
 				this.isLoading = true;
 				const resData = await this.axios.get(
-					'http://localhost:3000/posts',
+					process.env.VUE_APP_API_DOMAIN,
 					{
 						params: {
 							keyword: this.query.keyword,
@@ -129,7 +132,7 @@ export default {
 						}
 					}
 				);
-				if (!resData.data || resData.data.status !== 'success') throw new Error('取得資料失敗');
+				if (!resData.data || resData.data.status !== 'success') { throw new Error('取得資料失敗'); }
 				this.posts = resData.data.data;
 				this.isLoading = false;
 			} catch (error) {

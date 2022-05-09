@@ -82,7 +82,7 @@ export default {
 	data() {
 		return {
 			post: {
-				user: '626fe6a466960648d6d6b92b', // 使用者 id 先寫死
+				user: '626fe50b4966acf69f8fd5d2', // 使用者 id 先寫死
 				image: '',
 				content: ''
 			},
@@ -98,12 +98,10 @@ export default {
 		async submitPost() {
 			try {
 				this.isLoading = true;
-
 				const resData = await this.axios.post(
-					'http://localhost:3000/posts',
+					process.env.VUE_APP_API_DOMAIN,
 					this.post
 				);
-
 				if (!resData) throw new Error('新增貼文失敗');
 				if (resData.data.status !== 'success') {
 					throw new Error(resData.data.message);
