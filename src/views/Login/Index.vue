@@ -19,6 +19,11 @@
 							</template>
 						</div>
 						<!-- tabs -->
+            <div class="text-center mt-3">
+
+								<a>google 帳號登入</a>
+
+						</div>
 						<div class="text-center mt-3">
 							<template v-for="(item, key) in tabs">
 								<a :key="item.tabId"

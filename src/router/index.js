@@ -10,9 +10,9 @@ const routes = [
 		component: () => import('@/views/Login/Index')
 	},
 	{
+		name: 'Layout',
 		path: '/',
 		component: () => import('@/views/Index'),
-		props: { posts: [] },
 		children: [
 			{
 				name: 'Home',
@@ -49,6 +49,7 @@ const routes = [
 ];
 
 const router = new VueRouter({
+	mode: 'history',
 	routes
 });
 

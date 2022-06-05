@@ -8,6 +8,7 @@ import router from './router';
 import App from './App.vue';
 import Loading from 'vue-loading-overlay';
 import Notifications from 'vue-notification';
+import api from './api/index';
 import 'vue-loading-overlay/dist/vue-loading.css';
 
 window.jQuery = $;
@@ -17,7 +18,8 @@ Vue.component('loading', Loading);
 Vue.use(VueAxios, axios);
 Vue.use(require('vue-moment'));
 Vue.use(Notifications);
-axios.defaults.withCredentials = false;
+
+Vue.prototype.$api = api; // 将api挂载到vue的原型上
 
 new Vue({
 	data: {

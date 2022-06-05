@@ -115,7 +115,7 @@ export default {
 			posts: []
 		};
 	},
-	created() {
+	 created() {
 		this.getPosts();
 	},
 
@@ -123,21 +123,18 @@ export default {
 		async getPosts() {
 			try {
 				this.isLoading = true;
-				const resData = await this.axios.get(
-					process.env.VUE_APP_API_DOMAIN,
-					{
-						params: {
-							keyword: this.query.keyword,
-							sort: this.query.sort
-						}
-					}
-				);
+				const resData = await this.$api.getPosts({
+					keyword: this.query.keyword,
+					sort: this.query.sort
+				});
+
 				if (!resData.data || resData.data.status !== 'success') { throw new Error('取得資料失敗'); }
 				this.posts = resData.data.data;
 				this.isLoading = false;
 			} catch (error) {
+				console.log(error);
 				this.isLoading = false;
-				this.showNotify('error', '取得貼文失敗');
+				this.showNotify('error', error.data.message);
 			}
 		},
 		showNotify(type, title, text) {
