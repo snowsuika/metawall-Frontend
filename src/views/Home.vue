@@ -93,7 +93,6 @@
 				<SidebarSm></SidebarSm>
 			</div>
 			<loading :active.sync="isLoading"></loading>
-			<notifications position="center" group="post" style="top: 30px" />
 		</div>
 	</div>
 </template>
@@ -115,7 +114,7 @@ export default {
 			posts: []
 		};
 	},
-	 created() {
+	created() {
 		this.getPosts();
 	},
 
@@ -147,6 +146,7 @@ export default {
 		height: 50px;
 		border-radius: 50%;
 		border: 2px black solid;
+    object-fit: cover
 	}
 	small {
 		font-size: 12px;

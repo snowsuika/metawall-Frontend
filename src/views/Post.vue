@@ -81,7 +81,7 @@ export default {
 	data() {
 		return {
 			post: {
-				user: '626fe50b4966acf69f8fd5d2', // 使用者 id 先寫死
+				user: this.$store.state.userInfo.userId,
 				image: '',
 				content: ''
 			},
@@ -92,20 +92,46 @@ export default {
 			previewUrl: null
 		};
 	},
-	created() {},
+	created() {
+	},
 	methods: {
+		async uploadImage() {
+			return new Promise((resolve, reject) => {
+				this.isLoading = true;
+				if (!this.uploadImg) return resolve();
+				const { token } = this.$store.state;
+				this.isLoading = true;
+
+				var formdata = new FormData();
+				formdata.append('image', this.uploadImg);
+				formdata.append('type', '');
+
+				this.axios({
+					method: 'post',
+					url: `${process.env.VUE_APP_API_DOMAIN}/uploadImage`,
+					data: formdata,
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						Authorization: `Bearer ${token}`
+					}
+				}).then(res => {
+					if (res.data.status === 'success') {
+						this.post.image = res.data.data.imgUrl;
+						resolve(res.data.data.imgUrl);
+					}
+				}).catch(err => {
+					this.$toasted.show(err.response.data.message);
+					this.isLoading = false;
+					reject(err);
+				});
+			});
+		},
 		async submitPost() {
 			try {
 				this.isLoading = true;
-				const resData = await this.axios.post(
-					process.env.VUE_APP_API_DOMAIN,
-					this.post
-				);
-				if (!resData) throw new Error('新增貼文失敗');
-				if (resData.data.status !== 'success') {
-					throw new Error(resData.data.message);
-				}
-
+				await this.uploadImage();
+				const resData = await this.$api.createPost(this.post);
+				if (!resData.data || resData.status !== 'success') { throw new Error('新增貼文失敗'); }
 				this.isLoading = false;
 				this.$router.push('/');
 			} catch (error) {
@@ -115,7 +141,6 @@ export default {
 		async previewPicture() {
 			if (this.$refs.uploadImage.files.length === 0) return;
 			this.uploadImg = this.$refs.uploadImage.files[0];
-			const imageType = this.uploadImg.type;
 
 			// 確認檔案尺寸是否超過 1 MB
 			if (this.uploadImg.size / 1024 / 1024 > 1) {
@@ -134,10 +159,6 @@ export default {
 			};
 
 			this.previewUrl = await getBase64Url();
-			this.post.image = this.previewUrl.replace(
-				`data:${imageType};base64,`,
-				''
-			);
 		}
 	}
 };

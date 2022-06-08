@@ -17,7 +17,7 @@ export default {
    *  新增貼文
    */
 	createPost: (options) => {
-		return req('post', '/posts', options);
+		return req('post', '/post', options);
 	},
 	/**
    *  編輯貼文

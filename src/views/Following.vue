@@ -37,35 +37,35 @@ export default {
 			followings: [
 				{
 					id: 111,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '波吉',
 					days: 90,
 					date: '2022/2/14 12:00'
 				},
 				{
 					id: 222,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '多魯米',
 					days: 90,
 					date: '2022/1/24 15:30'
 				},
 				{
 					id: 333,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '卡克',
 					days: 90,
 					date: '2022/1/10 14:20'
 				},
 				{
 					id: 444,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '希琳',
 					days: 90,
 					date: '2022/1/10 14:20'
 				},
 				{
 					id: 555,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '多瑪斯',
 					days: 90,
 					date: '2021/12/2 22:00'

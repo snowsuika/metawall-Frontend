@@ -4,17 +4,19 @@
  */
 import axios from 'axios';
 
-let baseURL = '';
+// const baseURL = '';
 
-if (process.env.NODE_ENV === 'development') {
-	baseURL = 'http://localhost:3000';
-} else {
-	baseURL = 'https://metawall-snow.herokuapp.com';
-}
+// console.log('process.env.VUE_APP_API_DOMAIN', process.env.VUE_APP_API_DOMAIN);
+
+// if (process.env.VUE_APP_API_DOMAIN === 'development') {
+// 	baseURL = 'http://localhost:3000';
+// } else {
+// 	baseURL = 'https://metawall-snow.herokuapp.com';
+// }
 
 // 創建 axios 實例
 const instance = axios.create({
-	baseURL,
+	baseURL: process.env.VUE_APP_API_DOMAIN,
 	headers: { 'Content-Type': 'application/json' },
 	timeout: 20000
 });

@@ -79,7 +79,7 @@ export default {
 			is_follow: false,
 			info: {
 				name: '阿爾敏',
-				headshot: 'user-head-2.png',
+				headshot: 'noAvatar.jpeg',
 				follower: '987,987'
 			},
 			posts: [

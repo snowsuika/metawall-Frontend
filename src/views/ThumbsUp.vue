@@ -46,31 +46,31 @@ export default {
 			thumbsUp: [
 				{
 					id: 111,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '愛爾敏',
 					date: '2022/2/22 12:00'
 				},
 				{
 					id: 222,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '米卡莎',
 					date: '2022/2/11 12:00'
 				},
 				{
 					id: 333,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '李維',
 					date: '2022/1/22 12:00'
 				},
 				{
 					id: 444,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '米歇爾',
 					date: '2022/1/14 12:00'
 				},
 				{
 					id: 555,
-					headshot: 'user-head.png',
+					headshot: 'noAvatar.jpeg',
 					name: '愛爾敏',
 					date: '2022/1/10 12:00'
 				}

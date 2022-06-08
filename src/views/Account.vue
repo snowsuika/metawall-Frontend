@@ -50,6 +50,7 @@
 							<img
 								src="~@assets/img/noAvatar.jpeg"
 								class="headshot d-block mb-3"
+                style="object-fit: cover"
 							/>
 							<button
 								type="button"
