@@ -68,7 +68,6 @@
 			</div>
 		</div>
 		<loading :active.sync="isLoading" :is-full-page="true"></loading>
-		<notifications position="center" group="post" style="top: 40px" />
 	</div>
 </template>
 
