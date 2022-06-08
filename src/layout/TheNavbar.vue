@@ -9,7 +9,7 @@
 			<div class="nav-item dropdown">
 				<div class="nav-link dropdown-toggle d-flex align-items-center pe-0"
 					id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<img src="~@/assets/img/user-head.png" alt="head" class="head d-block me-2">
+					<img :src="userInfo.photo" alt="head" class="head d-block me-2">
 					<a href="#" class="border-bottom p-0 text-black text-decoration-none">Member</a>
 				</div>
 				<ul class="dropdown-menu rounded-0 p-0 text-center" aria-labelledby="navbarDropdown">
@@ -24,9 +24,9 @@
 						</router-link>
 					</li>
 					<li>
-						<router-link :to="{ name: 'Login' }" class="dropdown-item text-decoration-none py-2">
+						<a href="javascirpt:void(0)" class="dropdown-item text-decoration-none py-2" @click="signOut()">
 							登出
-						</router-link>
+						</a>
 					</li>
 				</ul>
 			</div>
@@ -35,14 +35,25 @@
 </template>
 
 <script>
+import { mapState, mapMutations } from 'vuex';
+
 export default {
 	name: 'Navbar',
+	computed: mapState([ 'userInfo' ]),
 	data() {
 		return {};
 	},
 	mounted() {
 	},
-	methods: {}
+	methods: {
+		...mapMutations({
+			removeToken: 'del_token'
+		}),
+		signOut() {
+			this.removeToken();
+			this.$router.replace('/login');
+		}
+	}
 };
 </script>
 

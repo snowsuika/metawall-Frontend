@@ -7,19 +7,26 @@ import VueAxios from 'vue-axios';
 import router from './router';
 import App from './App.vue';
 import Loading from 'vue-loading-overlay';
-import Notifications from 'vue-notification';
 import api from './api/index';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import store from './store/index';
+import Toasted from 'vue-toasted';
 
 window.jQuery = $;
 window.$ = $;
 Vue.component('loading', Loading);
 
+const toastedOptions = {
+	type: 'error',
+	position: 'bottom-center',
+	duration: 3000
+};
+
+Vue.use(Toasted, toastedOptions);
 Vue.use(VueAxios, axios);
 Vue.use(require('vue-moment'));
-Vue.use(Notifications);
 
-Vue.prototype.$api = api; // 将api挂载到vue的原型上
+Vue.prototype.$api = api;
 
 new Vue({
 	data: {
@@ -27,5 +34,6 @@ new Vue({
 		fullPage: true
 	},
 	router,
+	store,
 	render: (h) => h(App)
 }).$mount('#app');

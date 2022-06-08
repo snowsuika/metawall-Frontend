@@ -1,6 +1,18 @@
 import req from '@/utils/http.js';
 
 export default {
+  	/********************************************************
+   *  取得個人資料
+   */
+	getUserProfile: () => {
+		return req('get', '/user/profile');
+	},
+	/**
+   *  取消追蹤朋友
+   */
+	editUserProfile: () => {
+		return req('patch', '/user/profile');
+	},
 	/********************************************************
    *  追蹤朋友
    */

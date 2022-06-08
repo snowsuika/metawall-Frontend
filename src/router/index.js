@@ -10,15 +10,21 @@ const routes = [
 		component: () => import('@/views/Login/Index')
 	},
 	{
+		path: '/callback',
+		component: () => import('@/views/AuthCallback')
+	},
+	{
 		name: 'Layout',
 		path: '/',
 		component: () => import('@/views/Index'),
 		children: [
+
 			{
 				name: 'Home',
 				path: '/',
 				component: () => import('@/views/Home')
 			},
+
 			{
 				name: 'Following',
 				path: '/following',
@@ -44,7 +50,12 @@ const routes = [
 				path: '/personal-page',
 				component: () => import('@/views/PersonalPage')
 			}
+
 		]
+	},
+	{
+		path: '*',
+		redirect: '/'
 	}
 ];
 

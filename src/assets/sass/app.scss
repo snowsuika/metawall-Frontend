@@ -10,5 +10,10 @@
 // 必須放在自定義variable後，bootstrap顏色才能正確顯示
 @import '~bootstrap/scss/bootstrap';
 
+// 自定義全域樣式
+.cursor-pointer{
+  cursor: pointer;
+}
+
 // components
 @import "./components/all";

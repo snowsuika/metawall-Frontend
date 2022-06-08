@@ -19,11 +19,10 @@
 							</template>
 						</div>
 						<!-- tabs -->
-            <div class="text-center mt-3">
-
-								<a>google 帳號登入</a>
-
-						</div>
+            <button class="btn bg-white w-100 mt-2" @click="oAuthLogin()">
+              <img class="mr-2" src="@/assets/img/logo/google-flat.png" alt="" style="width:25px">
+              Google 帳號登入
+              </button>
 						<div class="text-center mt-3">
 							<template v-for="(item, key) in tabs">
 								<a :key="item.tabId"
@@ -37,6 +36,7 @@
 								</a>
 							</template>
 						</div>
+
 					</div>
 				</div>
 			</div>
@@ -45,6 +45,7 @@
 </template>
 
 <script>
+
 export default {
 	name: 'Login',
 	components: {
@@ -71,11 +72,28 @@ export default {
 					name: '註冊帳號',
 					modal: 'NavSignUp'
 				}
+
 			]
 		};
 	},
-	mounted() {},
-	methods: {}
+	created() {
+
+	},
+	mounted() {
+
+	},
+	methods: {
+		oAuthLogin() {
+      	let baseURL = '';
+			if (process.env.NODE_ENV === 'development') {
+				baseURL = 'http://localhost:3000';
+			} else {
+				baseURL = 'https://metawall-snow.herokuapp.com';
+			}
+
+			location.href = `${baseURL}/auth/google`;
+		}
+	}
 };
 </script>
 

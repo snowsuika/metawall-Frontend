@@ -7,8 +7,8 @@
 			<ul class="mt-4 ms-2">
 				<li class="mb-3 fw-bold">
 					<router-link :to="{ name: 'PersonalPage' }" class="link d-flex align-items-center text-decoration-none">
-						<img src="~@/assets/img/user-head.png" alt="head" class="info-icon rounded-circle d-block me-3">
-						邊緣小杰
+						<img :src="userInfo.photo" alt="head" class="info-icon rounded-circle d-block me-3">
+						{{ userInfo.name }}
 					</router-link>
 				</li>
 				<li class="mb-3 fw-bold">
@@ -33,10 +33,15 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
+
 export default {
 	name: 'Sidebar',
 	data() {
 		return {};
+	},
+	computed: mapState([ 'userInfo' ]),
+	created() {
 	},
 	methods: {}
 };

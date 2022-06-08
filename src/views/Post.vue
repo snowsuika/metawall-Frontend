@@ -107,25 +107,11 @@ export default {
 					throw new Error(resData.data.message);
 				}
 
-				this.showNotify('success', '新增成功');
 				this.isLoading = false;
 				this.$router.push('/');
 			} catch (error) {
 				this.isLoading = false;
-				this.showNotify(
-					'error',
-					'新增失敗',
-					error.response.data.message
-				);
 			}
-		},
-		showNotify(type, title, text) {
-			this.$notify({
-				group: 'post',
-				type,
-				title,
-				text
-			});
 		},
 		async previewPicture() {
 			if (this.$refs.uploadImage.files.length === 0) return;

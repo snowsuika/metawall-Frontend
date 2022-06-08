@@ -8,7 +8,7 @@
 						<select
 							v-model="query.sort"
 							name="type"
-							class="form-control form-select rounded-0"
+							class="form-control form-select rounded-0 cursor-pointer"
 							@change="getPosts()"
 						>
 							<option value="desc">最新貼文</option>
@@ -128,22 +128,13 @@ export default {
 					sort: this.query.sort
 				});
 
-				if (!resData.data || resData.data.status !== 'success') { throw new Error('取得資料失敗'); }
-				this.posts = resData.data.data;
+				if (!resData.data || resData.status !== 'success') { throw new Error('取得資料失敗'); }
+				this.posts = resData.data;
 				this.isLoading = false;
 			} catch (error) {
 				console.log(error);
 				this.isLoading = false;
-				this.showNotify('error', error.data.message);
 			}
-		},
-		showNotify(type, title, text) {
-			this.$notify({
-				group: 'post',
-				type,
-				title,
-				text
-			});
 		}
 	}
 };
