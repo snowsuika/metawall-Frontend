@@ -34,27 +34,28 @@ export default {
 	/********************************************************
    *  新增一則貼文按讚
    */
-	createPostLike: (params) => {
-		return req('get', '/posts', params);
+	createPostLike: (id) => {
+		return req('post', `/post/${id}/like`);
 	},
 	/**
    * 刪除一則貼文按讚
    */
-	deletePostLike: (params) => {
-		return req('get', '/posts', params);
+	deletePostLike: (id) => {
+		return req('delete', `/post/${id}/like`);
 	},
 	/********************************************************
    *  新增一則貼文留言
    */
-	createPostComment: (params) => {
-		return req('get', '/posts', params);
+	createPostComment: (postId, body) => {
+		return req('post', `/post/${postId}/comment`, body);
 	},
 	/**
    * 刪除一則貼文按讚
    */
-	deletePostComment: (params) => {
-		return req('get', '/posts', params);
+	deletePostComment: (postId, commentId) => {
+		return req('delete', `/post/${postId}/comment/${commentId}`);
 	},
+
 	/********************************************************
    *  新增一則貼文留言
    */

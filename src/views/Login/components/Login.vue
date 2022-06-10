@@ -65,24 +65,17 @@ export default {
 			setToken: 'set_token'
 		}),
 		async submitLogin() {
-			let baseURL = '';
-			if (process.env.NODE_ENV === 'development') {
-				baseURL = 'http://localhost:3000';
-			} else {
-				baseURL = 'https://metawall-snow.herokuapp.com';
-			}
-
 			this.isLoading = true;
 			axios.post(
-				`${baseURL}/auth/login`,
+				`${process.env.VUE_APP_API_DOMAIN}/auth/login`,
 				this.info
 			).then(res => {
 				this.setToken(res.data.data.token);
 
 				if (!this.token) {
-					this.$router.push('/');
-				} else {
 					this.$router.replace('/login');
+				} else {
+					this.$router.push('/');
 				}
 				this.isLoading = false;
 			}).catch(err => {

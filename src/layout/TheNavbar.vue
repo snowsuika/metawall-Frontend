@@ -24,7 +24,7 @@
 						</router-link>
 					</li>
 					<li>
-						<a href="javascirpt:void(0)" class="dropdown-item text-decoration-none py-2" @click="signOut()">
+						<a href="javascript:void(0)" class="dropdown-item text-decoration-none py-2" @click="signOut()">
 							登出
 						</a>
 					</li>

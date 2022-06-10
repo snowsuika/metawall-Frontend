@@ -55,15 +55,64 @@
 						</div>
 					</div>
 				</template>
+
 				<template v-else>
 					<div
 						class="rounded-card card mb-3"
 						v-for="post in posts"
 						:key="post._id"
 					>
+						<div class="dropdown">
+							<a
+								d="dropdownMenu2"
+								data-bs-toggle="dropdown"
+								aria-expanded="false"
+								href="javascript:void(0)"
+								class="position-absolute"
+								style="top: 15px; right: 15px"
+							>
+								<i class="bi bi-three-dots-vertical"></i>
+							</a>
+
+							<ul
+								class="dropdown-menu"
+								aria-labelledby="dropdownMenu2"
+							>
+								<li>
+									<button
+										class="dropdown-item"
+										type="button"
+										@click="editPost(post._id)"
+									>
+										編輯貼文
+									</button>
+								</li>
+								<li>
+									<button
+										class="dropdown-item"
+										type="button"
+										@click="
+											deletePost(post._id)
+										"
+									>
+										刪除貼文
+									</button>
+								</li>
+							</ul>
+						</div>
+
 						<div class="card-header bg-transparent pt-3 border-0">
 							<div class="d-flex align-items-center">
-								<img :src="post.user.photo" class="headshot" />
+								<img
+									v-if="post.user.photo === ''"
+									:src="getPictureUrl('noAvatar.jpeg')"
+									class="headshot"
+								/>
+								<img
+									v-else
+									:src="post.user.photo"
+									class="headshot"
+								/>
 								<div class="d-flex flex-column ms-3">
 									<a href="#" class="fw-bold">{{
 										post.user.name
@@ -82,6 +131,126 @@
 								class="w-100 mb-3 content-image"
 								v-if="post.image"
 							/>
+
+							<a
+								v-if="post.likes.length > 0"
+								href="javascript:void(0)"
+								class="text-decoration-none"
+								@click="togglePostLike(post._id, post.likes)"
+							>
+								<i
+									class="bi bi-hand-thumbs-up text-primary fs-5"
+								></i>
+								{{ post.likes.length }}
+							</a>
+							<a
+								v-else
+								href="javascript:void(0)"
+								class="text-decoration-none text-black-50"
+								@click="togglePostLike(post._id, post.likes)"
+							>
+								<i class="bi bi-hand-thumbs-up fs-5"></i>
+								成為第一個按讚的朋友
+							</a>
+							<div class="d-flex align-items-center mt-3">
+								<img
+									:src="
+										$store.state.userInfo.photo === ''
+											? getPictureUrl('noAvatar.jpeg')
+											: $store.state.userInfo.photo
+									"
+									class="headshot me-2"
+								/>
+								<div class="input-group">
+									<input
+										type="text"
+										class="form-control rounded-0"
+										placeholder="留言..."
+										aria-describedby="search"
+										v-model="comment"
+									/>
+									<button
+										class="btn btn-primary shadow-none rounded-0 px-4"
+										type="button"
+										@click="createComment(post._id)"
+									>
+										留言
+									</button>
+								</div>
+							</div>
+							<!-- 用戶回覆 -->
+							<ul v-if="post.comments.length > 0" class="mt-3">
+								<li
+									v-for="comment in post.comments"
+									:key="comment._id"
+									class="mb-3"
+								>
+									<div class="message-card card border-0">
+										<div class="card-body">
+											<div class="d-flex">
+												<img
+													:src="
+														comment.user.photo ===
+														''
+															? getPictureUrl(
+																	'noAvatar.jpeg'
+															  )
+															: comment.user.photo
+													"
+													class="headshot"
+												/>
+
+												<div
+													class="d-flex flex-column ms-3 pt-2"
+												>
+													<a
+														href="#"
+														class="fw-bold"
+														>{{
+															comment.user.name
+														}}</a
+													>
+
+													<a
+														v-if="
+															comment.user._id ===
+															userId
+														"
+														href="javascript:void(0)"
+														class="position-absolute"
+														style="
+															top: 10%;
+															right: 5%;
+														"
+														@click="
+															deleteComment(
+																post._id,
+																comment._id
+															)
+														"
+													>
+														<i
+															class="bi bi-trash3"
+														></i>
+													</a>
+													<small
+														class="text-black-50"
+														>{{
+															comment.createdAt
+																| moment(
+																	'YYYY/M/DD HH:mm'
+																)
+														}}</small
+													>
+													<p class="mt-2">
+														{{ comment.comment }}
+													</p>
+												</div>
+											</div>
+										</div>
+									</div>
+								</li>
+							</ul>
 						</div>
 					</div>
 				</template>
@@ -106,12 +275,14 @@ export default {
 	},
 	data() {
 		return {
+			userId: this.$store.state.userInfo.userId || '',
 			isLoading: true,
 			query: {
 				sort: 'desc',
 				keyword: ''
 			},
-			posts: []
+			posts: [],
+			comment: ''
 		};
 	},
 	created() {
@@ -127,13 +298,70 @@ export default {
 					sort: this.query.sort
 				});
 
-				if (!resData.data || resData.status !== 'success') { throw new Error('取得資料失敗'); }
+				if (!resData.data || resData.status !== 'success') {
+					throw new Error('取得資料失敗');
+				}
 				this.posts = resData.data;
 				this.isLoading = false;
 			} catch (error) {
 				console.log(error);
 				this.isLoading = false;
 			}
+		},
+		async editPost() {},
+		async deletePost() {},
+
+		async togglePostLike(postId, likes) {
+			try {
+				const isExistLike = likes.includes(this.userId);
+
+				if (!isExistLike) {
+					const resData = await this.$api.createPostLike(postId);
+					if (!resData || resData.status !== 'success') {
+						throw resData.message;
+					}
+				} else {
+					const resData = await this.$api.deletePostLike(postId);
+					if (!resData || resData.status !== 'success') {
+						throw resData.message;
+					}
+				}
+
+				this.getPosts();
+			} catch (error) {
+				this.$toasted.show(error);
+			}
+		},
+		async createComment(postId) {
+			try {
+				const resData = await this.$api.createPostComment(postId, {
+					comment: this.comment
+				});
+				if (!resData || resData.status !== 'success') {
+					throw resData.message;
+				}
+				this.getPosts();
+				this.comment = '';
+			} catch (error) {
+				this.$toasted.show(error);
+			}
+		},
+		async deleteComment(postId, commentId) {
+			try {
+				const resData = await this.$api.deletePostComment(
+					postId,
+					commentId
+				);
+				if (!resData || resData.status !== 'success') {
+					throw resData.message;
+				}
+				this.getPosts();
+			} catch (error) {
+				this.$toasted.show(error);
+			}
+		},
+		getPictureUrl(path) {
+			return require(`@/assets/img/${path}`);
 		}
 	}
 };
@@ -146,7 +374,7 @@ export default {
 		height: 50px;
 		border-radius: 50%;
 		border: 2px black solid;
-    object-fit: cover
+		object-fit: cover;
 	}
 	small {
 		font-size: 12px;

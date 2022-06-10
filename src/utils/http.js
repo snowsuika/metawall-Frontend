@@ -4,16 +4,6 @@
  */
 import axios from 'axios';
 
-// const baseURL = '';
-
-// console.log('process.env.VUE_APP_API_DOMAIN', process.env.VUE_APP_API_DOMAIN);
-
-// if (process.env.VUE_APP_API_DOMAIN === 'development') {
-// 	baseURL = 'http://localhost:3000';
-// } else {
-// 	baseURL = 'https://metawall-snow.herokuapp.com';
-// }
-
 // 創建 axios 實例
 const instance = axios.create({
 	baseURL: process.env.VUE_APP_API_DOMAIN,
@@ -31,6 +21,7 @@ instance.interceptors.request.use((config) => {
 	return config;
 },
 (error) => {
+	console.log('攔截請求錯誤', error);
 	return Promise.reject(error);
 }
 );
@@ -42,6 +33,8 @@ instance.interceptors.response.use((response) => {
 	return response;
 },
 (error) => {
+	console.log('攔截響應錯誤', error);
+	console.log('攔截響應錯誤', error.response);
 	if (error.response) {
 		switch (error.response.status) {
 		case 404:
