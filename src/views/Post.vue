@@ -93,7 +93,20 @@ export default {
 	created() {
 	},
 	methods: {
-		async uploadImage() {
+
+		async submitPost() {
+			try {
+				this.isLoading = true;
+				await this.uploadImage();
+				const resData = await this.$api.createPost(this.post);
+				if (!resData.data || resData.status !== 'success') { throw new Error('新增貼文失敗'); }
+				this.isLoading = false;
+				this.$router.push('/');
+			} catch (error) {
+				this.isLoading = false;
+			}
+		},
+    	async uploadImage() {
 			return new Promise((resolve, reject) => {
 				this.isLoading = true;
 				if (!this.uploadImg) return resolve();
@@ -124,18 +137,6 @@ export default {
 					reject(err);
 				});
 			});
-		},
-		async submitPost() {
-			try {
-				this.isLoading = true;
-				await this.uploadImage();
-				const resData = await this.$api.createPost(this.post);
-				if (!resData.data || resData.status !== 'success') { throw new Error('新增貼文失敗'); }
-				this.isLoading = false;
-				this.$router.push('/');
-			} catch (error) {
-				this.isLoading = false;
-			}
 		},
 		async previewPicture() {
 			if (this.$refs.uploadImage.files.length === 0) return;

@@ -33,8 +33,6 @@ instance.interceptors.response.use((response) => {
 	return response;
 },
 (error) => {
-	console.log('攔截響應錯誤', error);
-	console.log('攔截響應錯誤', error.response);
 	if (error.response) {
 		switch (error.response.status) {
 		case 404:
@@ -51,7 +49,7 @@ instance.interceptors.response.use((response) => {
 		alert('網路出了點問題，請重新連線後重整網頁');
 		return;
 	}
-	return Promise.reject(error);
+	return Promise.reject(error.response.data);
 }
 );
 

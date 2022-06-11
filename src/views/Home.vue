@@ -378,7 +378,6 @@ export default {
 			},
 			posts: [],
 			post: {},
-			comment: '',
 			errorMessage: '',
 			uploadImg: null,
 			previewUrl: null
@@ -485,7 +484,6 @@ export default {
 					throw resData.message;
 				}
 				this.getPosts();
-				this.comment = '';
 			} catch (error) {
 				this.$toasted.show(error);
 			}

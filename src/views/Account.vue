@@ -48,13 +48,28 @@
 							class="card-body p-4 d-flex flex-column align-items-center"
 						>
 							<img
-								src="~@assets/img/noAvatar.jpeg"
-								class="headshot d-block mb-3"
-                style="object-fit: cover"
+								:src="
+									previewUrl == null
+										? getPictureUrl('noAvatar.jpeg')
+										: previewUrl
+								"
+								class="headshot rounded-circle d-block mb-3"
+								style="
+									object-fit: cover;
+									border: 2px #000 solid;
+								"
+							/>
+							<input
+								class="d-none"
+								ref="uploadImage"
+								type="file"
+								accept="image/png, image/jpeg"
+								@change="previewPicture()"
 							/>
 							<button
 								type="button"
 								class="btn bg-black text-white rounded-0 shadow-none px-4 py-2"
+								@click.prevent="$refs.uploadImage.click()"
 							>
 								上傳大頭照
 							</button>
@@ -68,11 +83,11 @@
 										class="form-control rounded-0"
 										id="name"
 										placeholder="請輸入暱稱"
-										v-model="nameInfo.name"
+										v-model="userInfo.name"
 									/>
 								</div>
 								<div class="mb-3">
-									<label for="gender" class="form-label"
+									<label for="sex" class="form-label"
 										>性別</label
 									>
 									<div>
@@ -84,7 +99,7 @@
 												type="radio"
 												id="female"
 												value="female"
-												v-model="nameInfo.gender"
+												v-model="userInfo.sex"
 											/>
 											<label
 												class="form-check-label"
@@ -100,7 +115,7 @@
 												type="radio"
 												id="male"
 												value="male"
-												v-model="nameInfo.gender"
+												v-model="userInfo.sex"
 											/>
 											<label
 												class="form-check-label"
@@ -110,7 +125,7 @@
 										</div>
 									</div>
 								</div>
-								<div
+								<!-- <div
 									v-if="errorMessage"
 									class="text-danger text-center d-block mt-3"
 								>
@@ -121,10 +136,11 @@
 									>
 										{{ item }}
 									</small>
-								</div>
+								</div> -->
 								<button
 									type="button"
 									class="btn btn-secondary w-100 mt-3"
+									@click="editProfile()"
 								>
 									送出更新
 								</button>
@@ -146,7 +162,7 @@
 										>輸入新密碼</label
 									>
 									<input
-										type="text"
+										type="password"
 										class="form-control rounded-0"
 										id="password"
 										placeholder="請輸入新密碼"
@@ -155,21 +171,22 @@
 								</div>
 								<div class="mb-3">
 									<label
-										for="confirm_password"
+										for="confirmPassword"
 										class="form-label"
 										>再次輸入</label
 									>
 									<input
-										type="text"
+										type="password"
 										class="form-control rounded-0"
-										id="confirm_password"
+										id="confirmPassword"
 										placeholder="再次輸入輸入新密碼"
-										v-model="passwordInfo.confirm_password"
+										v-model="passwordInfo.confirmPassword"
 									/>
 								</div>
 								<button
 									type="button"
 									class="btn btn-secondary w-100 mt-3"
+									@click="updatePassword()"
 									:disabled="!formIsFinished"
 								>
 									重設密碼
@@ -186,10 +203,13 @@
 				<SidebarSm></SidebarSm>
 			</div>
 		</div>
+		<loading :active.sync="isLoading"></loading>
 	</div>
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
 	name: 'Following',
 	components: {
@@ -198,30 +218,153 @@ export default {
 	},
 	data() {
 		return {
-			nameInfo: {
-				name: '邊緣小杰',
-				gender: 'female'
+			isLoading: true,
+			userInfo: {
+				name: '',
+				sex: '',
+				photo: ''
 			},
-			errorMessage: [
-				'1.圖片寬高比必需為 1:1，請重新輸入',
-				'2.解析度寬度至少 300像素以上，請重新輸入'
-			],
 			passwordInfo: {
 				password: '',
-				confirm_password: ''
-			}
+				confirmPassword: ''
+			},
+			errorMessage: [],
+			uploadImg: null,
+			previewUrl: null
 		};
 	},
 	computed: {
 		formIsFinished() {
 			return (
-				this.passwordInfo.password && this.passwordInfo.confirm_password
+				this.passwordInfo.password && this.passwordInfo.confirmPassword
 			);
 		}
 	},
+	created() {
+		this.getProfile();
+	},
 	methods: {
+		...mapMutations({
+			setUserInfo: 'setUserInfo'
+		}),
+		async getProfile() {
+			try {
+				this.isLoading = true;
+				const resData = await this.$api.getUserProfile();
+				if (!resData.data || resData.status !== 'success') {
+					throw new Error('取得資料失敗');
+				}
+
+				const { name, sex, photo } = resData.data;
+				this.userInfo = {
+					name,
+					sex,
+					photo
+				};
+
+				if (photo !== '') this.previewUrl = photo;
+
+				this.isLoading = false;
+			} catch (error) {
+				this.isLoading = false;
+			}
+		},
+		async editProfile() {
+			try {
+				this.isLoading = true;
+				await this.uploadImage();
+
+				const resData = await this.$api.editUserProfile(this.userInfo);
+				if (!resData || resData.status !== 'success') {
+					throw resData.message;
+				}
+
+				this.setUserInfo(this.userInfo);
+				this.isLoading = false;
+				this.getProfile();
+			} catch (error) {
+				this.isLoading = false;
+				this.$toasted.show(error);
+			}
+		},
+		async uploadImage() {
+			return new Promise((resolve, reject) => {
+				this.isLoading = true;
+				if (!this.uploadImg) return resolve();
+				const { token } = this.$store.state;
+				this.isLoading = true;
+
+				var formdata = new FormData();
+				formdata.append('image', this.uploadImg);
+				formdata.append('type', 'avatar');
+
+				this.axios({
+					method: 'post',
+					url: `${process.env.VUE_APP_API_DOMAIN}/uploadImage`,
+					data: formdata,
+					headers: {
+						'Content-Type': 'multipart/form-data',
+						Authorization: `Bearer ${token}`
+					}
+				})
+					.then((res) => {
+						if (res.data.status === 'success') {
+							this.userInfo.photo = res.data.data.imgUrl;
+							this.isLoading = false;
+							resolve(res.data.data.imgUrl);
+						}
+					})
+					.catch((err) => {
+						this.isLoading = false;
+						reject(err.response.data.message);
+					});
+			});
+		},
+		async previewPicture() {
+			if (this.$refs.uploadImage.files.length === 0) return;
+			this.uploadImg = this.$refs.uploadImage.files[0];
+			this._imageFormatCheck(this.uploadImg);
+			if (this.errorMessage.length > 0) return;
+
+			const getBase64Url = () => {
+				return new Promise((resolve) => {
+					const reader = new FileReader();
+					reader.readAsDataURL(this.uploadImg);
+					reader.onload = function(e) {
+						resolve(e.target.result);
+					};
+				});
+			};
+
+			this.previewUrl = await getBase64Url();
+		},
+		_imageFormatCheck(file) {
+			// 確認檔案尺寸是否超過 1 MB
+			if (file.size / 1024 / 1024 > 1) { this.errorMessage.push('圖片檔案過大，僅限 1mb 以下檔案'); }
+
+			// TODO: 確認頭像是否符合 1:1 ，解析度 300 像素以上
+		},
 		getPictureUrl(path) {
 			return require(`@/assets/img/${path}`);
+		},
+		async updatePassword() {
+			try {
+				this.isLoading = true;
+
+				const resData = await this.$api.updatePassword(
+					this.passwordInfo
+				);
+				if (!resData || resData.status !== 'success') {
+					throw resData.message;
+				}
+
+				this.passwordInfo = {};
+				this.isLoading = false;
+			} catch (error) {
+				console.log(error);
+				this.isLoading = false;
+				this.$toasted.show('更新失敗，' + error.message);
+			}
 		}
 	}
 };
