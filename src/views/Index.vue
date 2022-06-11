@@ -36,14 +36,14 @@ export default {
 			try {
 				this.isLoading = true;
 				const resData = await this.$api.getUserProfile();
-				if (!resData.data || resData.status !== 'success') {
-					throw new Error('取得資料失敗');
-				}
+				if (!resData.data || resData.status !== 'success') throw new Error('取得資料失敗');
+
 				const userInfo = {
 					userId: resData.data._id,
 					name: resData.data.name,
 					photo: resData.data.photo
 				};
+
 				this.setUserInfo(userInfo);
 				this.isLoading = false;
 			} catch (error) {

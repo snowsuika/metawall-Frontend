@@ -9,8 +9,12 @@
 			<div class="nav-item dropdown">
 				<div class="nav-link dropdown-toggle d-flex align-items-center pe-0"
 					id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-					<img :src="userInfo.photo" alt="head" class="head d-block me-2">
-					<a href="#" class="border-bottom p-0 text-black text-decoration-none">Member</a>
+					<img :src="
+								userInfo.photo === ''
+									? getPictureUrl('noAvatar.jpeg')
+									: userInfo.photo
+							" alt="head" class="head rounded-circle d-block me-2" style="border:2px #000 solid">
+					<a href="#" class="border-bottom p-0 text-black text-decoration-none">{{ userInfo.name }}</a>
 				</div>
 				<ul class="dropdown-menu rounded-0 p-0 text-center" aria-labelledby="navbarDropdown">
 					<li>
@@ -45,6 +49,7 @@ export default {
 	},
 	mounted() {
 	},
+
 	methods: {
 		...mapMutations({
 			removeToken: 'del_token'
@@ -52,6 +57,9 @@ export default {
 		signOut() {
 			this.removeToken();
 			this.$router.replace('/login');
+		},
+		getPictureUrl(path) {
+			return require(`@/assets/img/${path}`);
 		}
 	}
 };

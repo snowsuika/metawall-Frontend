@@ -67,7 +67,6 @@
 				<SidebarSm></SidebarSm>
 			</div>
 		</div>
-		<loading :active.sync="isLoading" :is-full-page="true"></loading>
 	</div>
 </template>
 
@@ -87,7 +86,6 @@ export default {
 			},
 
 			errorMessage: '',
-			isLoading: false,
 			uploadImg: null,
 			previewUrl: null
 		};
@@ -117,6 +115,7 @@ export default {
 				}).then(res => {
 					if (res.data.status === 'success') {
 						this.post.image = res.data.data.imgUrl;
+						this.isLoading = false;
 						resolve(res.data.data.imgUrl);
 					}
 				}).catch(err => {

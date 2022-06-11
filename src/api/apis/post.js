@@ -11,7 +11,7 @@ export default {
    *  取得單一貼文
    */
 	getPost: (id) => {
-		return req('get', `/posts/${id}`);
+		return req('get', `/post/${id}`);
 	},
 	/**
    *  新增貼文
@@ -23,13 +23,13 @@ export default {
    *  編輯貼文
    */
 	editPost: (postId, options) => {
-		return req('patch', `/posts/${postId}`, options);
+		return req('patch', `/post/${postId}`, options);
 	},
 	/**
    * 刪除貼文
    */
-	deletePost: (params) => {
-		return req('delete', '/post', params);
+	deletePost: (postId) => {
+		return req('delete', `/post/${postId}`);
 	},
 	/********************************************************
    *  新增一則貼文按讚
