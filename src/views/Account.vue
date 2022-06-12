@@ -218,7 +218,7 @@ export default {
 	},
 	data() {
 		return {
-			isLoading: true,
+			isLoading: false,
 			userInfo: {
 				name: '',
 				sex: '',
@@ -266,6 +266,7 @@ export default {
 
 				this.isLoading = false;
 			} catch (error) {
+				this.$toasted.show(error.message);
 				this.isLoading = false;
 			}
 		},
@@ -284,7 +285,7 @@ export default {
 				this.getProfile();
 			} catch (error) {
 				this.isLoading = false;
-				this.$toasted.show(error);
+				this.$toasted.show(error.message);
 			}
 		},
 		async uploadImage() {
@@ -316,7 +317,7 @@ export default {
 					})
 					.catch((err) => {
 						this.isLoading = false;
-						reject(err.response.data.message);
+						reject(err.response);
 					});
 			});
 		},
@@ -344,9 +345,6 @@ export default {
 
 			// TODO: 確認頭像是否符合 1:1 ，解析度 300 像素以上
 		},
-		getPictureUrl(path) {
-			return require(`@/assets/img/${path}`);
-		},
 		async updatePassword() {
 			try {
 				this.isLoading = true;
@@ -361,7 +359,6 @@ export default {
 				this.passwordInfo = {};
 				this.isLoading = false;
 			} catch (error) {
-				console.log(error);
 				this.isLoading = false;
 				this.$toasted.show('更新失敗，' + error.message);
 			}

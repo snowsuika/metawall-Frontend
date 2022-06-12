@@ -4,47 +4,75 @@
 		<form class="mb-4 pt-2">
 			<div class="mb-3 w-100">
 				<input type="name" class="form-control rounded-0" placeholder="暱稱" v-model="info.name">
-				<small v-if="errorMessage.name" class="text-danger d-block mt-1">{{ errorMessage.name }}</small>
 			</div>
 			<div class="mb-3 w-100">
 				<input type="email" class="form-control rounded-0" placeholder="Email" v-model="info.email">
-				<small v-if="errorMessage.email" class="text-danger d-block mt-1">{{ errorMessage.email }}</small>
 			</div>
 			<div class="mb-3 w-100">
-				<input type="password" class="form-control rounded-0" placeholder="Password" v-model="info.password">
-				<small v-if="errorMessage.password" class="text-danger d-block mt-1">{{ errorMessage.password }}</small>
+				<input type="password" class="form-control rounded-0" placeholder="密碼" v-model="info.password">
+			</div>
+      	<div class="mb-3 w-100">
+				<input type="password" class="form-control rounded-0" placeholder="再次輸入密碼" v-model="info.confirmPassword">
 			</div>
 		</form>
-        <button type="button" class="btn btn-primary w-100" @click="submitSignup()" :disabled="!formIsFinished">註冊</button>
-	</div>
+        <button type="button" class="btn btn-primary w-100" @click="submitRegister()" :disabled="!formIsFinished">註冊</button>
+	<loading :active.sync="isLoading"></loading>
+</div>
 </template>
 
 <script>
+import axios from 'axios';
+import { mapState, mapMutations } from 'vuex';
+
 export default {
 	name: 'NavSignUp',
 	data() {
 		return {
+			isLoading: false,
 			info: {
 				name: '', // 暱稱
 				email: '', // 帳號
-				password: '' // 密碼
+				password: '', // 密碼
+				confirmPassword: '' // 密碼
 			},
 			errorMessage: {}
 		};
 	},
 	computed: {
+		...mapState({
+			token: 'token'
+		}),
 		formIsFinished() {
-			return this.info.email && this.info.password && this.info.name;
+			return this.info.name && this.info.email && this.info.password;
 		}
 	},
 	mounted() {},
 	methods: {
-		submitSignup() {
-			this.errorMessage = {
-				name: '暱稱至少 2 個字元以上',
-				email: '帳號已被註冊，請替換新的 Email！',
-				password: '密碼需至少 8 碼以上，並中英混合'
-			};
+		...mapMutations({
+			setToken: 'set_token'
+		}),
+		async submitRegister() {
+			this.isLoading = true;
+			axios
+				.post(`${process.env.VUE_APP_API_DOMAIN}/auth/register`, this.info)
+				.then((res) => {
+					this.setToken(res.data.data.token);
+
+					if (!this.token) {
+						this.$router.replace('/login');
+					} else {
+						this.$router.push('/');
+					}
+					this.isLoading = false;
+				})
+				.catch((err) => {
+					this.isLoading = false;
+					if (err.response.data.message) {
+						this.$toasted.show('註冊失敗！' + err.response.data.message);
+					} else {
+						this.$toasted.show('註冊失敗！' + err.message);
+					}
+				});
 		}
 	}
 };

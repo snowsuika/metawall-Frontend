@@ -56,9 +56,7 @@ export default {
 			return this.info.email && this.info.password;
 		}
 	},
-	created() {
-
-	},
+	created() {},
 	mounted() {},
 	methods: {
 		...mapMutations({
@@ -66,26 +64,26 @@ export default {
 		}),
 		async submitLogin() {
 			this.isLoading = true;
-			axios.post(
-				`${process.env.VUE_APP_API_DOMAIN}/auth/login`,
-				this.info
-			).then(res => {
-				this.setToken(res.data.data.token);
+			axios
+				.post(`${process.env.VUE_APP_API_DOMAIN}/auth/login`, this.info)
+				.then((res) => {
+					this.setToken(res.data.data.token);
 
-				if (!this.token) {
-					this.$router.replace('/login');
-				} else {
-					this.$router.push('/');
-				}
-				this.isLoading = false;
-			}).catch(err => {
-				this.isLoading = false;
-				if (err.response.data.message) {
-					this.$toasted.show(err.response.data.message);
-				} else {
-					this.$toasted.show(err);
-				}
-			});
+					if (!this.token) {
+						this.$router.replace('/login');
+					} else {
+						this.$router.push('/');
+					}
+					this.isLoading = false;
+				})
+				.catch((err) => {
+					this.isLoading = false;
+					if (err.response.data.message) {
+						this.$toasted.show(err.response.data.message);
+					} else {
+						this.$toasted.show(err.message);
+					}
+				});
 		}
 	}
 };

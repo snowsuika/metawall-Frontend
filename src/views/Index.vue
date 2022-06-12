@@ -47,6 +47,7 @@ export default {
 				this.setUserInfo(userInfo);
 				this.isLoading = false;
 			} catch (error) {
+				this.$toasted.show(error.message);
 				this.isLoading = false;
 			}
 		}
