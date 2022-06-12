@@ -67,6 +67,7 @@
 				<SidebarSm></SidebarSm>
 			</div>
 		</div>
+		<loading :active.sync="isLoading"></loading>
 	</div>
 </template>
 
@@ -79,6 +80,7 @@ export default {
 	},
 	data() {
 		return {
+			isLoading: false,
 			post: {
 				user: this.$store.state.userInfo.userId,
 				image: '',
@@ -90,23 +92,24 @@ export default {
 			previewUrl: null
 		};
 	},
-	created() {
-	},
+	created() {},
 	methods: {
-
 		async submitPost() {
 			try {
 				this.isLoading = true;
 				await this.uploadImage();
 				const resData = await this.$api.createPost(this.post);
-				if (!resData.data || resData.status !== 'success') { throw new Error('新增貼文失敗'); }
+				if (!resData.data || resData.status !== 'success') {
+					throw new Error('新增貼文失敗');
+				}
 				this.isLoading = false;
 				this.$router.push('/');
 			} catch (error) {
+				this.$toasted.show(error.message);
 				this.isLoading = false;
 			}
 		},
-    	async uploadImage() {
+		async uploadImage() {
 			return new Promise((resolve, reject) => {
 				this.isLoading = true;
 				if (!this.uploadImg) return resolve();
@@ -125,17 +128,19 @@ export default {
 						'Content-Type': 'multipart/form-data',
 						Authorization: `Bearer ${token}`
 					}
-				}).then(res => {
-					if (res.data.status === 'success') {
-						this.post.image = res.data.data.imgUrl;
+				})
+					.then((res) => {
+						if (res.data.status === 'success') {
+							this.post.image = res.data.data.imgUrl;
+							this.isLoading = false;
+							resolve(res.data.data.imgUrl);
+						}
+					})
+					.catch((err) => {
+						this.$toasted.show(err.response);
 						this.isLoading = false;
-						resolve(res.data.data.imgUrl);
-					}
-				}).catch(err => {
-					this.$toasted.show(err.response.data.message);
-					this.isLoading = false;
-					reject(err);
-				});
+						reject(err);
+					});
 			});
 		},
 		async previewPicture() {

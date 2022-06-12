@@ -14,11 +14,11 @@
 									? getPictureUrl('noAvatar.jpeg')
 									: userInfo.photo
 							" alt="head" class="head rounded-circle d-block me-2" style="border:2px #000 solid">
-					<a href="#" class="border-bottom p-0 text-black text-decoration-none">{{ userInfo.name }}</a>
+					<a href="javascript:void(0)" class="border-bottom p-0 text-black text-decoration-none">{{ userInfo.name }}</a>
 				</div>
 				<ul class="dropdown-menu rounded-0 p-0 text-center" aria-labelledby="navbarDropdown">
 					<li>
-						<router-link :to="{ name: 'PersonalPage' }" class="dropdown-item text-decoration-none py-2 border-bottom">
+						<router-link :to="{ path: `/user/${userInfo.userId}` }" class="dropdown-item text-decoration-none py-2 border-bottom">
 							我的貼文牆
 						</router-link>
 					</li>
@@ -49,7 +49,6 @@ export default {
 	},
 	mounted() {
 	},
-
 	methods: {
 		...mapMutations({
 			removeToken: 'del_token'
@@ -57,9 +56,6 @@ export default {
 		signOut() {
 			this.removeToken();
 			this.$router.replace('/login');
-		},
-		getPictureUrl(path) {
-			return require(`@/assets/img/${path}`);
 		}
 	}
 };

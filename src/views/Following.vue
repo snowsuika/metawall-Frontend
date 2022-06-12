@@ -2,15 +2,32 @@
 	<div class="following-wrap d-flex flex-column">
 		<div class="row">
 			<div class="col-12 col-md-7">
-				<h3 class="title py-3 border bg-white text-center mb-4">追蹤名單</h3>
-				<div class="rounded-card card mb-3" v-for="item in followings" :key="item.id">
+				<h3 class="title py-3 border bg-white text-center mb-4">
+					追蹤名單
+				</h3>
+				<div
+					class="rounded-card card mb-3"
+					v-for="item in followings"
+					:key="item._id"
+				>
 					<div class="card-body d-flex align-items-center">
-						<img :src="getPictureUrl(item.headshot)" class="headshot">
+						<img
+							:src="
+								item.user.photo === ''
+									? getPictureUrl('noAvatar.jpeg')
+									: item.user.photo
+							"
+							class="rounded-circle headshot"
+						/>
 						<div class="d-flex flex-column ms-3">
-							<a href="#" class="fw-bold">{{ item.name }}</a>
-							<small class="text-black-50">您已追蹤 {{ item.days }} 天！</small>
+							<a href="javascript:void(0)" class="fw-bold" @click="$router.push(`/user/${item.user._id}`)">{{ item.user.name }}</a>
+							<small class="text-black-50">您已追蹤 {{ item.diffDays }} 天！</small>
 						</div>
-						<small class="ms-auto">追蹤時間：{{ item.date }}</small>
+						<small class="ms-auto"
+							>追蹤時間：{{
+								item.createdAt | moment('YYYY/M/DD HH:mm')
+							}}</small
+						>
 					</div>
 				</div>
 			</div>
@@ -21,11 +38,11 @@
 				<SidebarSm></SidebarSm>
 			</div>
 		</div>
+		<loading :active.sync="isLoading"></loading>
 	</div>
 </template>
 
 <script>
-
 export default {
 	name: 'Following',
 	components: {
@@ -34,61 +51,49 @@ export default {
 	},
 	data() {
 		return {
-			followings: [
-				{
-					id: 111,
-					headshot: 'noAvatar.jpeg',
-					name: '波吉',
-					days: 90,
-					date: '2022/2/14 12:00'
-				},
-				{
-					id: 222,
-					headshot: 'noAvatar.jpeg',
-					name: '多魯米',
-					days: 90,
-					date: '2022/1/24 15:30'
-				},
-				{
-					id: 333,
-					headshot: 'noAvatar.jpeg',
-					name: '卡克',
-					days: 90,
-					date: '2022/1/10 14:20'
-				},
-				{
-					id: 444,
-					headshot: 'noAvatar.jpeg',
-					name: '希琳',
-					days: 90,
-					date: '2022/1/10 14:20'
-				},
-				{
-					id: 555,
-					headshot: 'noAvatar.jpeg',
-					name: '多瑪斯',
-					days: 90,
-					date: '2021/12/2 22:00'
-				}
-			]
+			isLoading: false,
+			followings: []
 		};
 	},
+	created() {
+		this.getFollowing();
+	},
 	methods: {
-		getPictureUrl(path) {
-			return require(`@/assets/img/${path}`);
+		async getFollowing() {
+			try {
+				this.isLoading = true;
+				const resData = await this.$api.getUserFollowers();
+				if (!resData.data || resData.status !== 'success') {
+					throw new Error('取得資料失敗');
+				}
+				this.followings = resData.data[0].following;
+
+				// 計算已經追蹤的天數
+				const diffDays = (date) => 	parseInt(Math.abs(new Date() - new Date(date)) / 1000 / 60 / 60 / 24);
+
+				this.followings.forEach(item => {
+					item.diffDays = diffDays(item.createdAt);
+				});
+
+				this.isLoading = false;
+			} catch (error) {
+				this.$toasted.show(error.message);
+				this.isLoading = false;
+			}
 		}
 	}
 };
 </script>
 
 <style lang="scss" scoped>
-	.following-wrap {
-		.title {
-			box-shadow: -5px 5px 0 -2px white, -5px 5px 0 0px $black;
-		}
-		.headshot {
-			width: 50px;
-			height: 50px;
-		}
+.following-wrap {
+	.title {
+		box-shadow: -5px 5px 0 -2px white, -5px 5px 0 0px $black;
 	}
+	.headshot {
+		width: 50px;
+		height: 50px;
+		border: 2px #000 solid;
+	}
+}
 </style>

@@ -21,7 +21,6 @@ instance.interceptors.request.use((config) => {
 	return config;
 },
 (error) => {
-	console.log('攔截請求錯誤', error);
 	return Promise.reject(error);
 }
 );
@@ -29,7 +28,6 @@ instance.interceptors.request.use((config) => {
  * 攔截響應
  */
 instance.interceptors.response.use((response) => {
-	console.log('response', response);
 	return response;
 },
 (error) => {

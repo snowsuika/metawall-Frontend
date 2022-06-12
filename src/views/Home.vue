@@ -97,7 +97,7 @@
 									<button
 										class="dropdown-item"
 										type="button"
-										@click="deletePost(post._id)"
+										@click="onDeletePost(post._id)"
 									>
 										刪除貼文
 									</button>
@@ -118,9 +118,16 @@
 									class="headshot"
 								/>
 								<div class="d-flex flex-column ms-3">
-									<a href="javascript:void(0)" @click="$router.push('/personal-page')" class="fw-bold">{{
-										post.user.name
-									}}</a>
+									<a
+										href="javascript:void(0)"
+										@click="
+											$router.push(
+												`/user/${post.user._id}`
+											)
+										"
+										class="fw-bold"
+										>{{ post.user.name }}</a
+									>
 									<small class="text-black-50">{{
 										new Date(post.createdAt)
 											| moment('YYYY/M/DD HH:mm')
@@ -145,7 +152,7 @@
 								<i
 									class="bi bi-hand-thumbs-up text-primary fs-5"
 								></i>
-								{{ post.likes.length }}
+								{{ post.likes && post.likes.length }}
 							</a>
 							<a
 								v-else
@@ -176,7 +183,7 @@
 									<button
 										class="btn btn-primary shadow-none rounded-0 px-4"
 										type="button"
-										@click="createComment(post._id,post.comment)"
+										@click="onCreateComment(post._id,post.comment)"
 									>
 										留言
 									</button>
@@ -227,7 +234,7 @@
 															right: 5%;
 														"
 														@click="
-															deleteComment(
+															onDeleteComment(
 																post._id,
 																comment._id
 															)
@@ -340,8 +347,8 @@
 							<button
 								type="button"
 								class="btn btn-primary"
-                data-bs-dismiss="modal"
-								@click="editPost(post._id)"
+								data-bs-dismiss="modal"
+								@click="onEditPost(post._id)"
 							>
 								編輯貼文
 							</button>
@@ -394,65 +401,6 @@ export default {
 			this.uploadImg = null;
 			this.previewUrl = null;
 		},
-		async getPosts() {
-			try {
-				this.isLoading = true;
-				const resData = await this.$api.getPosts({
-					keyword: this.query.keyword,
-					sort: this.query.sort
-				});
-
-				if (!resData.data || resData.status !== 'success') {
-					throw new Error('取得資料失敗');
-				}
-				this.posts = resData.data;
-				this.isLoading = false;
-			} catch (error) {
-				console.log(error);
-				this.isLoading = false;
-			}
-		},
-		async getPost(postId) {
-			try {
-				const resData = await this.$api.getPost(postId);
-				if (!resData || resData.status !== 'success') {
-					throw resData.message;
-				}
-				this.post = resData.data;
-				if (this.post.image !== '') this.previewUrl = this.post.image;
-			} catch (error) {
-				this.$toasted.show(error);
-			}
-		},
-		async editPost(postId) {
-			try {
-				await this.uploadImage();
-
-				const post = {
-					content: this.post.content,
-					image: this.post.image
-				};
-
-				const resData = await this.$api.editPost(postId, post);
-				if (!resData || resData.status !== 'success') {
-					throw resData.message;
-				}
-				this.getPosts();
-			} catch (error) {
-				this.$toasted.show(error);
-			}
-		},
-		async deletePost(postId) {
-			try {
-				const resData = await this.$api.deletePost(postId);
-				if (!resData || resData.status !== 'success') {
-					throw resData.message;
-				}
-				this.getPosts();
-			} catch (error) {
-				this.$toasted.show(error);
-			}
-		},
 
 		async togglePostLike(postId, likes) {
 			try {
@@ -475,35 +423,21 @@ export default {
 				this.$toasted.show(error);
 			}
 		},
-		async createComment(postId, comment) {
-			try {
-				const resData = await this.$api.createPostComment(postId, {
-					comment
-				});
-				if (!resData || resData.status !== 'success') {
-					throw resData.message;
-				}
-				this.getPosts();
-			} catch (error) {
-				this.$toasted.show(error);
-			}
+		onEditPost(postId) {
+			this.editPost(postId);
+			this.getPosts();
 		},
-		async deleteComment(postId, commentId) {
-			try {
-				const resData = await this.$api.deletePostComment(
-					postId,
-					commentId
-				);
-				if (!resData || resData.status !== 'success') {
-					throw resData.message;
-				}
-				this.getPosts();
-			} catch (error) {
-				this.$toasted.show(error);
-			}
+		onDeletePost(postId) {
+			this.deletePost(postId);
+			this.getPosts();
 		},
-		getPictureUrl(path) {
-			return require(`@/assets/img/${path}`);
+		onCreateComment(postId, comment) {
+      	this.createComment(postId, comment);
+			this.getPosts();
+		},
+		onDeleteComment(postId, comment) {
+			this.deleteComment(postId, comment);
+			this.getPosts();
 		},
 		async previewPicture() {
 			if (this.$refs.uploadImage.files.length === 0) return;
