@@ -57,9 +57,9 @@ export default {
 	},
 
 	/********************************************************
-   *  新增一則貼文留言
+   *  取得個人所有貼文
    */
-	getPersonalPosts: (params) => {
-		return req('get', '/posts', params);
+	getPersonalPosts: (userId, params) => {
+		return req('get', `/post/user/${userId}`, params);
 	}
 };

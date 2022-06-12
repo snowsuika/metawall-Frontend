@@ -21,6 +21,12 @@ export default {
 	},
 
 	/********************************************************
+	 *  取得個人追蹤名單
+	 */
+	getUserFollowers: () => {
+		return req('get', '/user/following');
+	},
+	/**
 	 *  追蹤朋友
 	 */
 	createFollwingUser: (userId) => {
@@ -32,16 +38,10 @@ export default {
 	deleteFollwingUser: (userId) => {
 		return req('delete', `/user/following/${userId}`);
 	},
-	/**
-	 *  取得個人追蹤名單
-	 */
-	getUserFollowers: () => {
-		return req('get', '/user/following');
-	},
 	/********************************************************
 	 *  取得我按讚的文章
 	 */
-	getLikePosts: (options) => {
-		return req('post', '/posts', options);
+	getLikePosts: () => {
+		return req('get', '/user/likeList');
 	}
 };

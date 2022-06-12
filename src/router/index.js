@@ -47,7 +47,7 @@ const routes = [
 			},
 			{
 				name: 'PersonalPage',
-				path: '/personal-page',
+				path: '/user/:id',
 				component: () => import('@/views/PersonalPage')
 			}
 

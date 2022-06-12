@@ -6,6 +6,7 @@ import axios from 'axios';
 import VueAxios from 'vue-axios';
 import router from './router';
 import App from './App.vue';
+import mixins from '@/utils/mixins/index.js';
 import Loading from 'vue-loading-overlay';
 import api from './api/index';
 import 'vue-loading-overlay/dist/vue-loading.css';
@@ -33,6 +34,7 @@ new Vue({
 		isLoading: true,
 		fullPage: true
 	},
+	mixins,
 	router,
 	store,
 	render: (h) => h(App)
