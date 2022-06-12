@@ -10,7 +10,7 @@
 			<ul class="mt-4 ms-2">
 				<li class="mb-3 fw-bold">
 					<router-link
-						:to="{ name: 'PersonalPage' }"
+					:to="{ path: `/user/${userInfo.userId}` }"
 						class="link d-flex align-items-center text-decoration-none"
 					>
 						<img
@@ -68,9 +68,6 @@ export default {
 	computed: mapState([ 'userInfo' ]),
 	created() {},
 	methods: {
-		getPictureUrl(path) {
-			return require(`@/assets/img/${path}`);
-		}
 	}
 };
 </script>
