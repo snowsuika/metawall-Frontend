@@ -10,6 +10,7 @@ const routes = [
 		component: () => import('@/views/Login/Index')
 	},
 	{
+		name: 'AuthCallback',
 		path: '/callback',
 		component: () => import('@/views/AuthCallback')
 	},
@@ -60,7 +61,8 @@ const routes = [
 ];
 
 const router = new VueRouter({
-	mode: 'history',
+	mode: 'hash',
+	base: '/metawall',
 	routes
 });
 

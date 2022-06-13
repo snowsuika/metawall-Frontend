@@ -164,11 +164,6 @@
 								<div class="d-flex flex-column ms-3">
 									<a
 										href="javascript:void(0)"
-										@click="
-											$router.push(
-												`/user/${post.user._id}`
-											)
-										"
 										class="fw-bold"
 										>{{ post.user.name }}</a
 									>
@@ -267,7 +262,12 @@
 													class="d-flex flex-column ms-3 pt-2"
 												>
 													<a
-														href="#"
+														href="javascript:void(0)"
+														@click="
+															$router.push(
+																`/user/${comment.user._id}`
+															)
+														"
 														class="fw-bold"
 														>{{
 															comment.user.name
@@ -440,16 +440,12 @@ export default {
 				sort: 'desc',
 				keyword: ''
 			},
-			user: {
-				name: '',
-				photo: '',
-				follower: ''
-			},
+			user: {},
 			posts: [],
 			post: {},
 			errorMessage: '',
 			postId: '',
-			userId: '',
+			userId: this.$route.params.id || '',
 			uploadImg: null,
 			previewUrl: null
 		};
@@ -477,10 +473,9 @@ export default {
 				});
 				this.posts = resData.data.posts;
 				this.user = resData.data.userInfo;
-
 				if (this.user.followers.length > 0) {
-					this.isFollowing = this.user.followers.some(item =>
-						item.user === this.userInfo.userId
+					this.isFollowing = this.user.followers.some(
+						(item) => item.user === this.userInfo.userId
 					);
 				}
 				this.isLoading = false;

@@ -23,7 +23,7 @@ export default {
 	},
 	beforeCreate() {
 		const isExistToken = localStorage.getItem('token');
-		if (!isExistToken) this.$router.replace('/login');
+		if (!isExistToken) this.$router.replace({ name: 'Login' });
 	},
 	created() {
 		this.getUserInfo();

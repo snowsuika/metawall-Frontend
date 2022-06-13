@@ -59,9 +59,9 @@ export default {
 					this.setToken(res.data.data.token);
 
 					if (!this.token) {
-						this.$router.replace('/login');
+						this.$router.replace({ name: 'Login' });
 					} else {
-						this.$router.push('/');
+						this.$router.push({ name: 'Home' });
 					}
 					this.isLoading = false;
 				})

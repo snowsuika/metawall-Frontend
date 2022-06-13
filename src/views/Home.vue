@@ -183,7 +183,12 @@
 									<button
 										class="btn btn-primary shadow-none rounded-0 px-4"
 										type="button"
-										@click="onCreateComment(post._id,post.comment)"
+										@click="
+											onCreateComment(
+												post._id,
+												post.comment
+											)
+										"
 									>
 										留言
 									</button>
@@ -215,7 +220,12 @@
 													class="d-flex flex-column ms-3 pt-2"
 												>
 													<a
-														href="#"
+														href="javascipt:void(0)"
+														@click="
+															$router.push(
+																`/user/${comment.user._id}`
+															)
+														"
 														class="fw-bold"
 														>{{
 															comment.user.name
@@ -432,7 +442,7 @@ export default {
 			this.getPosts();
 		},
 		onCreateComment(postId, comment) {
-      	this.createComment(postId, comment);
+			this.createComment(postId, comment);
 			this.getPosts();
 		},
 		onDeleteComment(postId, comment) {

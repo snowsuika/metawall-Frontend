@@ -13,15 +13,14 @@ export default {
 	},
 	beforeCreate() {},
 	created() {
-		const { searchParams } = new URL(window.location.href);
-		if (searchParams.has('token') && searchParams.get('token')) {
-			this.setToken(searchParams.get('token'));
-		}
+		const { token } = this.$route.query;
+		if (token)	this.setToken(token);
 		const isExistToken = localStorage.getItem('token');
+
 		if (!isExistToken) {
-			this.$router.replace('/login');
+			this.$router.replace({ name: 'Login' });
 		} else {
-			this.$router.push('/home');
+			this.$router.push({ name: 'Home' });
 		};
 	},
 
