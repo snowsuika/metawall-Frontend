@@ -26,7 +26,7 @@
 							</template>
 						</div>
 						<!-- tabs -->
-						<button
+						<!-- <button
 							class="btn bg-white w-100 mt-2"
 							@click="oAuthLogin()"
 						>
@@ -37,7 +37,7 @@
 								style="width: 25px"
 							/>
 							Google 帳號登入
-						</button>
+						</button> -->
 						<div class="text-center mt-3">
 							<template v-for="(item, key) in tabs">
 								<a
