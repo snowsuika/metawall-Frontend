@@ -2,7 +2,7 @@
 	<div class="personal-wrap d-flex flex-column">
 		<div class="row">
 			<div class="col-12 col-md-7">
-				<div v-if="posts.length !== 0" class="personal-card card mb-4">
+				<div v-if="posts.length !== 0  && user" class="personal-card card mb-4">
 					<div
 						class="card-header d-flex align-items-center p-0 border-bottom-0"
 					>

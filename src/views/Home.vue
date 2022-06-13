@@ -36,7 +36,7 @@
 					</div>
 				</div>
 				<!-- 貼文 -->
-				<template v-if="posts.length === 0">
+				<template v-if="posts.length === 0 && userInfo">
 					<div class="rounded-card card">
 						<div class="card-header bg-transparent border-bottom">
 							<span
